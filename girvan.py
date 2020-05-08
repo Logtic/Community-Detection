@@ -6,6 +6,7 @@ import random as rand
 import sys
 
 import time
+import matplotlib.pyplot as plt
 
 _DEBUG_ = False
 
@@ -16,7 +17,10 @@ def buildG(G, file_, delimiter_):
         if len(line) > 2:
             if float(line[2]) != 0.0:
                 #line format: u,v,w
-                G.add_edge(int(line[0]),int(line[1]),weight=float(line[2]))
+                w = float(line[2])
+#if (w<0):
+#                    w = -w
+                G.add_edge(int(line[0]),int(line[1]),weight=w)
         else:
             #line format: u,v
             G.add_edge(int(line[0]),int(line[1]),weight=1.0)
@@ -81,16 +85,16 @@ def runGirvanNewman(G, Orig_deg, m_):
     while True:    
         CmtyGirvanNewmanStep(G)
         Q = _GirvanNewmanGetModularity(G, Orig_deg, m_);
-        print("Modularity of decomposed G: {}".format(Q))
+#        print("Modularity of decomposed G: {}".format(Q))
         if Q > BestQ:
             BestQ = Q
             Bestcomps = list(nx.connected_components(G))    #Best Split
-            print("Identified components: {}".format(Bestcomps))
+#            print("Identified components: {}".format(Bestcomps))
         if G.number_of_edges() == 0:
             break
     if BestQ > 0.0:
         print("Max modularity found (Q): {} and number of communities: {}".format(BestQ, len(Bestcomps)))
-        print("Graph communities: {}".format(Bestcomps))
+#        print("Graph communities: {}".format(Bestcomps))
     else:
         print("Max modularity (Q):", BestQ)
 
@@ -126,7 +130,8 @@ def main(argv):
     runGirvanNewman(G, Orig_deg, m_)
     endTime = time.time()
     print(endTime - startTime)
-
+    nx.draw(G)
+    plt.savefig('girvan.png')
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
