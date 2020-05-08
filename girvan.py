@@ -5,12 +5,12 @@ import csv
 import random as rand
 import sys
 
+import time
+
 _DEBUG_ = False
 
 # This method reads the graph structure from the input file
 def buildG(G, file_, delimiter_):
-    #construct the weighted version of the contact graph from cgraph.dat file
-    #reader = csv.reader(open("/home/kazem/Data/UCI/karate.txt"), delimiter=" ")
     reader = csv.reader(open(file_), delimiter=delimiter_)
     for line in reader:
         if len(line) > 2:
@@ -121,7 +121,11 @@ def main(argv):
     Orig_deg = {}
     Orig_deg = UpdateDeg(A, G.nodes())
     #run Newman alg
+    startTime = time.time()
+
     runGirvanNewman(G, Orig_deg, m_)
+    endTime = time.time()
+    print(endTime - startTime)
 
 
 if __name__ == "__main__":
